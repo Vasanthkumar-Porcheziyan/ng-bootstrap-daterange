@@ -6,11 +6,13 @@ import { AppComponent } from './app.component';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { BootstrapDateComponent } from './bootstrap-date/bootstrap-date.component';
+import { CustomDateRangeComponent } from './custom-date-range/custom-date-range.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    BootstrapDateComponent
+    BootstrapDateComponent,
+    CustomDateRangeComponent
   ],
   imports: [
     BrowserModule,

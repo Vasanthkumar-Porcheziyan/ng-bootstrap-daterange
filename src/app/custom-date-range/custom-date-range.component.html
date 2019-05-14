@@ -1,0 +1,52 @@
+<div class="row">
+  <div class="form-inline">
+    <div class=" col-md-12 form-group">
+      <div class="col-md-12 input-group" id="dateRangePicker">
+        <div></div>
+        <input class="form-control" [placeholder]="placeholder" [value]="displayText" (click)="isOpen = !isOpen" />
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary calendar" (click)="isOpen = !isOpen" type="button"></button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="row">
+  <div class="form-inline">
+    <div class=" col-md-12 form-group">
+      <div *ngIf="isOpen" class="col-md-12 input-group">
+        <div class="col-md-3 range__leftpanel">
+          <div class="ranges">
+            <ul>
+              <li *ngFor="let range of rangeArray">
+                <button [ngClass]="{'active': range.name === selectedRange}" type="button"
+                  (click)="onRangeClicked(range)">{{range.label}}</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div *ngIf="selectedRange === CustomRangeLabel" class="col-md-9 range__rightpanel">
+          <ngb-datepicker #dp (select)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t"
+            outsideDays="hidden" [startDate]="startDate">
+          </ngb-datepicker>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12"> startDate : {{from}}</div>
+  <div class="col-md-12">endDate: {{to}}</div>
+
+</div>
+
+
+<ng-template #t let-date="date" let-focused="focused">
+  <span class="custom-day" [class.focused]="focused"
+    [class.range]="isFrom(date) || isTo(date) || isInside(date) || isHovered(date)"
+    [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = toDate(date)"
+    (mouseleave)="hoveredDate = null">
+    {{ date.day }}
+  </span>
+</ng-template>
