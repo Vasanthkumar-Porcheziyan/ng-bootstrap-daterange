@@ -1,8 +1,8 @@
 <div class="row">
   <div class="form-inline">
     <div class=" col-md-12 form-group">
-      <div class="col-md-12 input-group" id="dateRangePicker">
-        <input class="form-control" [placeholder]="placeholder" [value]="displayText" (click)="isOpen = !isOpen" />
+      <div class="col-md-12 input-group">
+        <input class="form-control" [placeholder]="placeholder" [value]="displayText" (click)="isOpen = !isOpen" [disabled]="disableText" />
         <div class="input-group-append">
           <button class="btn btn-outline-secondary calendar" (click)="isOpen = !isOpen" type="button"></button>
         </div>

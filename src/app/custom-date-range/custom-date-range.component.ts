@@ -16,6 +16,7 @@ export class CustomDateRangeComponent implements OnInit {
   placeholder : string = "Select the range";
   defaultLabelIndex : number = 1;
   dateFormat : string ="DD.MM.YYYY";
+  disableText : boolean;
   // Input ends
   
   from: moment.Moment;
@@ -102,7 +103,7 @@ export class CustomDateRangeComponent implements OnInit {
 
   applybutton_Clicked(){
     // emit
-    this.set_displayText({label:this.CustomRangeLabel});
+    this.set_displayText({label:this.CustomRangeLabel, value: {singleValue : false}});
     this.isOpen = !this.isOpen;
   }
 
