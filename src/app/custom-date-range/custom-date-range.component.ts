@@ -12,24 +12,8 @@ export class CustomDateRangeComponent implements OnInit {
   to: moment.Moment;
   hoveredDate: Date;
   startDate: NgbDate;
-  // ranges: any = {
-  //   'Today': [moment(), moment()],
-  //   'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-  //   'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-  //   'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-  //   'This Month': [moment().startOf('month'), moment().endOf('month')],
-  //   'Last Month': [
-  //     moment()
-  //       .subtract(1, 'month')
-  //       .startOf('month'),
-  //     moment()
-  //       .subtract(1, 'month')
-  //       .endOf('month')
-  //   ],
-  //   'Custom Range':[]
-  // };
-
-  placeholder : string = "Choose range..";
+  isOpen: Boolean;
+  placeholder : string = "Select the range";
   displayText : string = null;
 
   rangeArray : Array<{name: string, label : string, value : {startdate: moment.Moment, enddate: moment.Moment}}>
@@ -61,10 +45,23 @@ export class CustomDateRangeComponent implements OnInit {
       this.from = range.value.startdate;
       this.to = range.value.enddate;
       this.displayText = this.from.format("DD.MM.YYYY").toString();
+      this.isOpen = !this.isOpen;
+      // emit
     } else {
       // do on custom range selected
       this.startDate = new NgbDate(new Date(this.from.toString()).getFullYear(), new Date(this.from.toString()).getMonth()+1, new Date(this.from.toString()).getDay());
     }
+  }
+
+  clearbutton_Clicked(){
+    this.from = null;
+    this.to = null;
+    this.displayText = null;
+  }
+
+  applybutton_Clicked(){
+    // emit
+    this.isOpen = !this.isOpen;
   }
 
   /**

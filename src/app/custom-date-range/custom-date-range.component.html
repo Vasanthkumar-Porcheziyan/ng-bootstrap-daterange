@@ -25,11 +25,16 @@
               </li>
             </ul>
           </div>
+          <div *ngIf="selectedRange === CustomRangeLabel">
+            <button class="btn btn-outline-secondary" type="button" (click)="clearbutton_Clicked()" >Clear</button>
+            <button class="btn btn-outline-primary" type="button" (click)="applybutton_Clicked()">Apply</button>
+          </div>
         </div>
         <div *ngIf="selectedRange === CustomRangeLabel" class="col-md-9 range__rightpanel">
           <ngb-datepicker #dp (select)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t"
             outsideDays="hidden" [startDate]="startDate">
           </ngb-datepicker>
+          
         </div>
       </div>
     </div>
