@@ -8,48 +8,89 @@ import { NgbDateStruct, NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap'
   styleUrls: ['./custom-date-range.component.scss']
 })
 export class CustomDateRangeComponent implements OnInit {
+  // Input starts
+  rangeArray : Array<{name: string, label : string, value : {startdate: moment.Moment, enddate: moment.Moment, singleValue : boolean}}>
+  selectedRange: string = null;
+  showOnlyLabel : boolean;
+  CustomRangeLabel : string = 'CustomRange';
+  placeholder : string = "Select the range";
+  defaultLabelIndex : number = 1;
+  dateFormat : string ="DD.MM.YYYY";
+  // Input ends
+  
   from: moment.Moment;
   to: moment.Moment;
   hoveredDate: Date;
   startDate: NgbDate;
   isOpen: Boolean;
-  placeholder : string = "Select the range";
   displayText : string = null;
-
-  rangeArray : Array<{name: string, label : string, value : {startdate: moment.Moment, enddate: moment.Moment}}>
-  selectedRange: string;
-  CustomRangeLabel : string = 'CustomRange';
-
 
   constructor( calendar: NgbCalendar) { 
     this.rangeArray = [];
-    this.rangeArray.push({name: 'Today', label : 'Today', value : {startdate: moment(), enddate: moment()}});
-    this.rangeArray.push({name: 'Yesterday', label : 'Yesterday', value : {startdate: moment().subtract(1, 'days'), enddate: moment().subtract(1, 'days')}});
-    this.rangeArray.push({name: 'Last7Days', label : 'Last 7 Days', value : {startdate: moment().subtract(6, 'days'), enddate: moment()}});
-    this.rangeArray.push({name: 'Last30Days', label : 'Last 30 Days', value : {startdate: moment().subtract(29, 'days'), enddate: moment()}});
-    this.rangeArray.push({name: 'ThisMonth', label : 'This Month', value : {startdate:moment().startOf('month'), enddate: moment().endOf('month')}});
-    this.rangeArray.push({name: 'LastMonth', label : 'Last Month', value : {startdate: moment().subtract(1, 'month').startOf('month'), enddate:  moment().subtract(1, 'month').endOf('month')}});
-    this.rangeArray.push({name: this.CustomRangeLabel, label : this.CustomRangeLabel, value : {startdate: moment(), enddate: moment()}});
-
-    this.selectedRange = "Yesterday";
-    this.from = moment().subtract(1, 'days');
-    this.to = moment().subtract(1, 'days');
+    this.rangeArray.push({name: 'Today', label : 'Today', value : {startdate: moment(), enddate: moment(), singleValue : true}});
+    this.rangeArray.push({name: 'Yesterday', label : 'Yesterday', value : {startdate: moment().subtract(1, 'days'), enddate: moment().subtract(1, 'days'), singleValue : true}});
+    this.rangeArray.push({name: 'Last7Days', label : 'Last 7 Days', value : {startdate: moment().subtract(6, 'days'), enddate: moment(), singleValue : false}});
+    this.rangeArray.push({name: 'Last30Days', label : 'Last 30 Days', value : {startdate: moment().subtract(29, 'days'), enddate: moment(), singleValue : false}});
+    this.rangeArray.push({name: 'ThisMonth', label : 'This Month', value : {startdate:moment().startOf('month'), enddate: moment().endOf('month'), singleValue : false}});
+    this.rangeArray.push({name: 'LastMonth', label : 'Last Month', value : {startdate: moment().subtract(1, 'month').startOf('month'), enddate:  moment().subtract(1, 'month').endOf('month'), singleValue : false}});
+    this.rangeArray.push({name: this.CustomRangeLabel, label : this.CustomRangeLabel, value : {startdate: moment(), enddate: moment(), singleValue : false}});
   }
 
   ngOnInit() {
+    this.initialLoad();
+  }
+
+  initialLoad(){
+    if(this.showOnlyLabel){
+      if(this.selectedRange !== '' && this.selectedRange !== null){
+        this.displayText = this.selectedRange;
+      } else {
+        this.displayText = this.rangeArray[this.defaultLabelIndex].label;
+        this.selectedRange = this.rangeArray[this.defaultLabelIndex].label;
+      }
+      this.from = this.rangeArray.find(x=> x.label === this.selectedRange).value.startdate;
+      this.to = this.rangeArray.find(x=> x.label === this.selectedRange).value.enddate;
+    } else {
+      if(this.selectedRange !== '' && this.selectedRange !== null){
+        let currentRange = this.rangeArray.find(x=> x.label === this.selectedRange);
+        if(currentRange){
+          this.from = currentRange.value.startdate;
+          this.to = currentRange.value.enddate;
+          this.set_displayText(currentRange);
+        }
+      } else {
+        this.from = this.rangeArray[this.defaultLabelIndex].value.startdate;
+        this.to = this.rangeArray[this.defaultLabelIndex].value.enddate;
+        this.set_displayText(this.rangeArray[this.defaultLabelIndex]);
+        this.selectedRange = this.rangeArray[this.defaultLabelIndex].label;
+      }
+    }
   }
 
   onRangeClicked(range){
     this.selectedRange = range.name;
-    if(range.name !== "CustomRange"){
+    if(range.name !== this.CustomRangeLabel){
       this.from = range.value.startdate;
       this.to = range.value.enddate;
-      this.displayText = this.from.format("DD.MM.YYYY").toString();
+      if(this.showOnlyLabel){
+        this.displayText = range.label;
+      } else {
+        this.set_displayText(range);
+      }
       this.isOpen = !this.isOpen;
       // emit
     } else {
       // do on custom range selected
       this.startDate = new NgbDate(new Date(this.from.toString()).getFullYear(), new Date(this.from.toString()).getMonth()+1, new Date(this.from.toString()).getDay());
+    }
+  }
+
+  set_displayText(range){
+    if(!range.value.singleValue)
+    {
+      this.displayText = this.from.format(this.dateFormat).toString() + '-' + this.to.format(this.dateFormat).toString();
+    } else {
+      this.displayText = this.from.format(this.dateFormat).toString();
     }
   }
 
@@ -61,6 +102,7 @@ export class CustomDateRangeComponent implements OnInit {
 
   applybutton_Clicked(){
     // emit
+    this.set_displayText({label:this.CustomRangeLabel});
     this.isOpen = !this.isOpen;
   }
 
@@ -90,12 +132,12 @@ export class CustomDateRangeComponent implements OnInit {
       return `Select the range`;
     }
 
-    const fromFormatted = moment(this.from).format('DD.MM.YYYY');
+    const fromFormatted = moment(this.from).format(this.dateFormat);
 
     return this.to
       ? `${fromFormatted}`
       + ` - `
-      + `${moment(this.to).format('DD.MM.YYYY')}`
+      + `${moment(this.to).format(this.dateFormat)}`
       : `${fromFormatted}`;
 
   }
@@ -106,7 +148,6 @@ export class CustomDateRangeComponent implements OnInit {
     } else if (this.from && !this.to && this.toMoment(date).isAfter(this.from)) {
       this.to = this.toMoment(date);
       // this.emit(true);
-      this.displayText = `${this.from.format("DD.MM.YYYY").toString()} - ${this.to.format("DD.MM.YYYY").toString()}`;
     } else {
       this.to = null;
       this.from = this.toMoment(date);

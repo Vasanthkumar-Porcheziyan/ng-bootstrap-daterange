@@ -2,7 +2,6 @@
   <div class="form-inline">
     <div class=" col-md-12 form-group">
       <div class="col-md-12 input-group" id="dateRangePicker">
-        <div></div>
         <input class="form-control" [placeholder]="placeholder" [value]="displayText" (click)="isOpen = !isOpen" />
         <div class="input-group-append">
           <button class="btn btn-outline-secondary calendar" (click)="isOpen = !isOpen" type="button"></button>
@@ -13,7 +12,7 @@
   </div>
 </div>
 <div class="row">
-  <div class="form-inline">
+  <div class="form-inline  dropdown_Position dropdown_ZIndex">
     <div class=" col-md-12 form-group">
       <div *ngIf="isOpen" class="col-md-12 input-group">
         <div class="col-md-3 range__leftpanel">
@@ -34,7 +33,6 @@
           <ngb-datepicker #dp (select)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t"
             outsideDays="hidden" [startDate]="startDate">
           </ngb-datepicker>
-          
         </div>
       </div>
     </div>
